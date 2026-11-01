@@ -25,9 +25,9 @@ const os = require('os');
 const here = __dirname;
 const outDir = path.resolve(here, '..', 'out');
 const ADB = process.env.ADB || findAdb();
-const LEDGER = 'pc_disabled_owntv';
+const LEDGER = 'fmd_disabled';
 // Espelho do que saiu por `pm uninstall -k --user 0` (o outro caminho, quando disable-user e barrado).
-const LEDGER_REMOVED = 'pc_removed_owntv';
+const LEDGER_REMOVED = 'fmd_removed';
 
 /** adb do PATH, ou o dos SDKs comuns. `ADB=/caminho/adb` sempre vence. */
 function findAdb() {
@@ -528,6 +528,6 @@ try {
   main();
 } catch (e) {
   console.error('erro: ' + e.message);
-  if (process.env.OWNTV_DEBUG) console.error(e.stack);
+  if (process.env.FMD_DEBUG) console.error(e.stack);
   process.exit(1);
 }

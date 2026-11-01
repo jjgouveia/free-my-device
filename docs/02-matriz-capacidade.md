@@ -28,8 +28,8 @@ adb shell pm uninstall -k --user 0 com.miui.msa.global
 adb shell pm install-existing --user 0 com.miui.msa.global
 ```
 
-Se o `disable-user` passar, o ledger usa `pc_disabled_owntv` e o revert faz `pm enable`. Se falhar,
-o `mode.js` cai sozinho para `uninstall` e grava em `pc_removed_owntv`.
+Se o `disable-user` passar, o ledger usa `fmd_disabled` e o revert faz `pm enable`. Se falhar, o
+`mode.js` cai sozinho para `uninstall` e grava em `fmd_removed`.
 
 ## O que isso muda no desenho
 

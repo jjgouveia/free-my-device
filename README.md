@@ -6,10 +6,9 @@ tablet ou celular —, aplicar um ajuste medido e reverter tudo com um comando.
 Não é uma lista de debloat copiada da internet. É um ciclo: **medir → planejar → aplicar → verificar →
 reverter**. O perfil de cada aparelho é dado (JSON), não código, e só o que está escrito nele é tocado.
 
-O contrato de perfil (`spec 1`) nasceu no [Free My TV](https://github.com/simbasjungles/free-my-tv):
-`stock_home`, `stock_dream`, `input_service` e `quirks` são campos de TV que ficam opcionais nos outros
-aparelhos. Foi assim que o mesmo schema aceitou o Redmi Pad SE sem uma linha de mudança. Hoje o único
-perfil medido aqui é o do tablet; a TV é onde o formato começou.
+O contrato de perfil (`spec 1`) é o mesmo para qualquer aparelho: `stock_home`, `stock_dream`,
+`input_service` e `quirks` são campos de TV e ficam opcionais fora dela. É por isso que o mesmo schema
+aceita um tablet sem uma linha de mudança. Hoje o único perfil medido aqui é o do Redmi Pad SE.
 
 ## Requisitos
 
@@ -100,8 +99,8 @@ Store queimava mais de um núcleo desde o boot. Debloat sem medir teria "resolvi
   GMS), mesmo que o perfil peça.
 - Não transforma aparelho lento em rápido: ele remove peso e prova o que mudou.
 - **Na TV, ainda só a metade de pacotes.** `off_after_handover` aparece no plano como "esperando home
-  própria" e não é executado: trocar home, screensaver e entrada é trabalho do app do Free My TV, não
-  desta bancada. O perfil e o ledger já servem; a mão no `TvInputManager` não.
+  própria" e não é executado: trocar home, screensaver e entrada é trabalho de um app rodando no
+  aparelho, não desta bancada. O perfil e o ledger já servem; a mão no `TvInputManager` não.
 - Ainda não fala com o aparelho sem PC. A camada no aparelho (Shizuku) está decidida, não implementada.
 
 ## Estrutura
@@ -120,8 +119,8 @@ O estado real do aparelho manda, não a saída do comando. São dois ledgers por
 
 | chave | o que significa | revert usa |
 |---|---|---|
-| `pc_disabled_owntv` | pacote desligado com `pm disable-user` | `pm enable` |
-| `pc_removed_owntv` | pacote tirado do usuário 0 com `pm uninstall -k --user 0` | `pm install-existing` |
+| `fmd_disabled` | pacote desligado com `pm disable-user` | `pm enable` |
+| `fmd_removed` | pacote tirado do usuário 0 com `pm uninstall -k --user 0` | `pm install-existing` |
 
 O segundo existe porque o HyperOS 15 recusa `disable-user` em pacote de sistema
 (`SecurityException: Cannot disable system packages`). O perfil não sabe disso: o `fate` diz *o que*

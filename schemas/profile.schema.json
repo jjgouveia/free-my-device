@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/simbasjungles/free-my-tv/tools/profile.schema.json",
-  "title": "Free My TV / CleanYourTV device profile",
-  "description": "The other half of the contract: what a TV *is*. Facts measured on one device — which packages exist, what each one is allowed to become, how its inputs are wired. The payload (tvconfig) is what the person chose; this is what the hardware allows. A runtime that does not know a fate refuses to act on it and says so, instead of treating it as keep.",
+  "$id": "https://github.com/jjgouveia/free-my-device/schemas/profile.schema.json",
+  "title": "free-my-device device profile",
+  "description": "What a device *is*, measured: which packages exist, what each one is allowed to become, how its inputs are wired. Fields that only exist on a TV (stock_dream, input_service) are optional, so the same contract covers phone, tablet and TV. A runtime that does not know a fate refuses to act on it and says so, instead of treating it as keep.",
   "type": "object",
   "additionalProperties": false,
   "required": ["spec", "kind", "id", "brand", "device", "packages"],
@@ -16,7 +16,7 @@
       "const": "profile"
     },
     "id": {
-      "description": "Short, stable id: brand plus device, lowercase, dashes. The payload may point at it.",
+      "description": "Short, stable id: brand plus device, lowercase, dashes. Referenced by the ledger and by other tools.",
       "type": "string",
       "pattern": "^[a-z0-9][a-z0-9-]{1,30}$"
     },
