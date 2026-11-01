@@ -1,0 +1,287 @@
+{
+  "spec": 1,
+  "kind": "profile",
+  "id": "xiaomi-redmi-pad-se",
+  "name": "Redmi Pad SE (8 GB)",
+  "brand": "Redmi",
+  "model": "23073RPBFL",
+  "device": "xun",
+  "android": 35,
+  "fingerprint": "Redmi/xun_global/xun:15/AQ3A.240829.003/OS2.0.209.0.VMUMIXM:user/release-keys",
+  "tested": "2026-11-01",
+  "evidence": "adb 37.0.1 via USB, 2026-11-01: pm list packages, getprop, dumpsys, dumpsys gfxinfo. Rotulos conferidos com aapt2 nos APKs puxados do aparelho. A medicao crua nao e publicada: contem a lista de apps do dono.",
+  "display": {
+    "width": 1200,
+    "height": 1920,
+    "density": 280,
+    "lowRam": false,
+    "memTotalMb": 7691
+  },
+  "stock_home": "com.miui.home",
+  "packages": [
+    {
+      "pkg": "com.miui.msa.global",
+      "fate": "off",
+      "why": "MSA, o SDK de anúncios da MIUI/HyperOS: notificações e 'recomendações' patrocinadas",
+      "installed": true,
+      "disabled": false
+    },
+    {
+      "pkg": "com.miui.analytics",
+      "fate": "off",
+      "why": "telemetria da MIUI: estatísticas de uso enviadas à Xiaomi",
+      "installed": true,
+      "disabled": false
+    },
+    {
+      "pkg": "com.miui.misightservice",
+      "fate": "off",
+      "why": "'System quality monitoring' (rótulo do APK): coleta de estatísticas do aparelho",
+      "installed": true,
+      "disabled": false
+    },
+    {
+      "pkg": "com.miui.bugreport",
+      "fate": "off",
+      "why": "relato de bugs do sistema; nada no dia a dia depende dele",
+      "installed": true,
+      "disabled": false
+    },
+    {
+      "pkg": "com.mi.globalbrowser",
+      "fate": "off",
+      "why": "Mi Browser; o dono usa Firefox e Chrome",
+      "installed": true,
+      "disabled": false
+    },
+    {
+      "pkg": "com.miui.videoplayer",
+      "fate": "off",
+      "why": "Mi Video, player com promoção e anúncio; os vídeos abrem em outro app",
+      "installed": true,
+      "disabled": false
+    },
+    {
+      "pkg": "com.miui.player",
+      "fate": "off",
+      "why": "Mi Music; a música toca em outro app",
+      "installed": true,
+      "disabled": false
+    },
+    {
+      "pkg": "com.xiaomi.discover",
+      "fate": "off",
+      "why": "Discover: recomendações e vitrine de apps da Xiaomi",
+      "installed": true,
+      "disabled": false
+    },
+    {
+      "pkg": "com.miui.thirdappassistant",
+      "fate": "off",
+      "why": "'Third party app problems' (rótulo do APK): avisos e sugestões de desinstalar apps de terceiros",
+      "installed": true,
+      "disabled": false
+    },
+    {
+      "pkg": "com.miui.qr",
+      "fate": "off",
+      "why": "DeviceInfoQR: QR com os dados do aparelho, só para atendimento técnico",
+      "installed": true,
+      "disabled": false
+    },
+    {
+      "pkg": "com.bsp.logmanager",
+      "fate": "off",
+      "why": "'Log generator' (CatchLog do ODM Longcheer): coleta log do sistema para fábrica/assistência",
+      "installed": true,
+      "disabled": false
+    },
+    {
+      "pkg": "com.longcheertel.AutoTest",
+      "fate": "off",
+      "why": "teste automático de fábrica do ODM Longcheer",
+      "installed": true,
+      "disabled": false
+    },
+    {
+      "pkg": "com.longcheertel.cit",
+      "fate": "off",
+      "why": "CIT, o teste de integração de fábrica do ODM Longcheer",
+      "installed": true,
+      "disabled": false
+    },
+    {
+      "pkg": "com.miui.vsimcore",
+      "fate": "off",
+      "why": "vSIM virtual: o aparelho é só Wi-Fi, sem modem",
+      "installed": true,
+      "disabled": false
+    },
+    {
+      "pkg": "com.miui.fm",
+      "fate": "off",
+      "why": "rádio FM: o tablet não tem rádio",
+      "installed": true,
+      "disabled": false
+    },
+    {
+      "pkg": "com.miui.fmservice",
+      "fate": "off",
+      "why": "serviço do rádio FM, sem hardware para atender",
+      "installed": true,
+      "disabled": false
+    },
+    {
+      "pkg": "com.microsoftsdk.crossdeviceservicebroker",
+      "fate": "off",
+      "why": "ponte 'Vincular ao Windows' pré-instalada, sem uso aqui",
+      "installed": true,
+      "disabled": false
+    },
+    {
+      "pkg": "com.miui.cleaner",
+      "fate": "keep",
+      "why": "limpeza com propaganda, mas o menu Armazenamento dos Ajustes pode abrir nele: medir antes de tirar"
+    },
+    {
+      "pkg": "com.mi.android.globalFileexplorer",
+      "fate": "keep",
+      "why": "gerenciador de arquivos da Mi com recomendações; o Google Files já está instalado, mas alguns fluxos do sistema abrem nele"
+    },
+    {
+      "pkg": "com.miui.miservice",
+      "fate": "keep",
+      "why": "'Mi Services' (atendimento/pós-venda); efeito de desligar não medido"
+    },
+    {
+      "pkg": "com.miui.daemon",
+      "fate": "keep",
+      "why": "daemon da MIUI; as listas de debloat o desligam, mas o efeito no HyperOS 2 não foi medido"
+    },
+    {
+      "pkg": "com.milink.service",
+      "fate": "keep",
+      "why": "Mi Share/espelhamento para aparelhos Xiaomi; o dono pode usar"
+    },
+    {
+      "pkg": "com.xiaomi.miralink",
+      "fate": "keep",
+      "why": "Mi Link (espelhar tela para PC/Xiaomi); o dono pode usar"
+    },
+    {
+      "pkg": "com.miui.home",
+      "fate": "never",
+      "why": "a home do aparelho: sem ela não há tela inicial"
+    },
+    {
+      "pkg": "com.miui.securitycenter",
+      "fate": "never",
+      "why": "é dele que saem as permissões e o gerenciador de apps do HyperOS"
+    },
+    {
+      "pkg": "com.miui.securityadd",
+      "fate": "never",
+      "why": "complemento do gerenciador de segurança"
+    },
+    {
+      "pkg": "com.miui.securitycore",
+      "fate": "never",
+      "why": "núcleo do gerenciador de segurança"
+    },
+    {
+      "pkg": "com.miui.guardprovider",
+      "fate": "never",
+      "why": "provedor do antivírus/segurança do HyperOS"
+    },
+    {
+      "pkg": "com.lbe.security.miui",
+      "fate": "never",
+      "why": "controle de permissões do MIUI; sem ele os apps não recebem permissão"
+    },
+    {
+      "pkg": "com.miui.powerkeeper",
+      "fate": "never",
+      "why": "bateria e desempenho, incluindo o controle de apps em segundo plano"
+    },
+    {
+      "pkg": "com.miui.gallery",
+      "fate": "never",
+      "why": "as fotos do dono"
+    },
+    {
+      "pkg": "com.xiaomi.account",
+      "fate": "never",
+      "why": "conta Mi: base de Find Device, backup e serviços Xiaomi"
+    },
+    {
+      "pkg": "com.miui.cloudservice",
+      "fate": "never",
+      "why": "Mi Cloud: pode haver backup do dono"
+    },
+    {
+      "pkg": "com.miui.cloudbackup",
+      "fate": "never",
+      "why": "backup do Mi Cloud"
+    },
+    {
+      "pkg": "com.miui.micloudsync",
+      "fate": "never",
+      "why": "sincronização do Mi Cloud"
+    },
+    {
+      "pkg": "com.xiaomi.finddevice",
+      "fate": "never",
+      "why": "'Encontrar aparelho' da Xiaomi"
+    },
+    {
+      "pkg": "com.xiaomi.bluetooth",
+      "fate": "never",
+      "why": "pilha de Bluetooth do HyperOS"
+    },
+    {
+      "pkg": "com.miui.face",
+      "fate": "never",
+      "why": "desbloqueio facial"
+    },
+    {
+      "pkg": "com.xiaomi.ugd",
+      "fate": "never",
+      "why": "'GPU Driver Updater' (rótulo do APK): atualiza o driver da GPU; desligar arrisca jogos e composição"
+    },
+    {
+      "pkg": "com.novatek.novavis",
+      "fate": "never",
+      "why": "componente do ODM (Novatek); efeito de desligar desconhecido"
+    },
+    {
+      "pkg": "com.xiaomi.touchservice",
+      "fate": "never",
+      "why": "serviço de toque do HyperOS"
+    },
+    {
+      "pkg": "com.miui.notification",
+      "fate": "never",
+      "why": "central de notificações do HyperOS"
+    },
+    {
+      "pkg": "com.miui.core",
+      "fate": "never",
+      "why": "núcleo de serviços da MIUI"
+    },
+    {
+      "pkg": "com.miui.system",
+      "fate": "never",
+      "why": "serviços de sistema da MIUI"
+    },
+    {
+      "pkg": "com.android.vending",
+      "fate": "never",
+      "why": "Play Store: atualizações e licenças dos apps comprados"
+    },
+    {
+      "pkg": "com.google.android.gms",
+      "fate": "never",
+      "why": "Play services: sem ele metade dos apps para de funcionar"
+    }
+  ]
+}
