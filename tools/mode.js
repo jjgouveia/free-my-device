@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// Bancada de PC para tablet/celular Android antigo: mede, planeja, aplica e reverte, falando
-// com o aparelho pelo adb do computador.
+// Bancada de PC para aparelho Android (TV, tablet, celular): mede, planeja, aplica e reverte,
+// falando com o aparelho pelo adb do computador.
 //
 //   node tools/mode.js measure [--serial S] [--out F]
 //   node tools/mode.js plan    <perfil.json> [--serial S]

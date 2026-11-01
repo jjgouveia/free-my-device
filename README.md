@@ -1,16 +1,22 @@
-# tablet-tuning
+# free-my-device
 
-Bancada de PC (adb, sem root) para descobrir **por que** um tablet ou celular Android antigo está
-pesado, aplicar um ajuste medido e reverter tudo com um comando.
+Bancada de PC (adb, sem root) para descobrir **por que** um aparelho Android está pesado — TV,
+tablet ou celular —, aplicar um ajuste medido e reverter tudo com um comando.
 
 Não é uma lista de debloat copiada da internet. É um ciclo: **medir → planejar → aplicar → verificar →
 reverter**. O perfil de cada aparelho é dado (JSON), não código, e só o que está escrito nele é tocado.
+
+O contrato de perfil (`spec 1`) nasceu no [Free My TV](https://github.com/simbasjungles/free-my-tv):
+`stock_home`, `stock_dream`, `input_service` e `quirks` são campos de TV que ficam opcionais nos outros
+aparelhos. Foi assim que o mesmo schema aceitou o Redmi Pad SE sem uma linha de mudança. Hoje o único
+perfil medido aqui é o do tablet; a TV é onde o formato começou.
 
 ## Requisitos
 
 - [Node.js](https://nodejs.org) 18 ou mais novo (só biblioteca padrão, sem `npm install`)
 - `adb` (platform-tools). O script procura no PATH e nos SDKs comuns; `ADB=/caminho/adb` sempre vence
-- Depuração USB ligada no aparelho, com a chave do PC autorizada
+- Alcançar o aparelho: USB em celular/tablet (depuração ligada, chave autorizada) ou `adb connect`
+  em TV com depuração de rede
 - Nada de root. Nada é instalado no aparelho.
 
 ```bash
@@ -93,12 +99,15 @@ Store queimava mais de um núcleo desde o boot. Debloat sem medir teria "resolvi
 - Não desliga o que está em `ALWAYS_KEEP` (tela, ajustes, instalador, permissões, teclado, telefonia,
   GMS), mesmo que o perfil peça.
 - Não transforma aparelho lento em rápido: ele remove peso e prova o que mudou.
+- **Na TV, ainda só a metade de pacotes.** `off_after_handover` aparece no plano como "esperando home
+  própria" e não é executado: trocar home, screensaver e entrada é trabalho do app do Free My TV, não
+  desta bancada. O perfil e o ledger já servem; a mão no `TvInputManager` não.
 - Ainda não fala com o aparelho sem PC. A camada no aparelho (Shizuku) está decidida, não implementada.
 
 ## Estrutura
 
 ```
-devices/xiaomi/redmi-pad-se.json   perfil medido (spec 1)
+devices/<marca>/<aparelho>.json    perfil medido (spec 1), um arquivo por aparelho
 schemas/profile.schema.json        contrato que o perfil precisa cumprir
 tools/mode.js                      measure | plan | apply | revert | frames
 docs/                              diagnóstico, matriz de capacidade, método

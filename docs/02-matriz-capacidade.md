@@ -1,8 +1,10 @@
 # Matriz de capacidade: o que dá para fazer sem root
 
-Medido no Redmi Pad SE (`xun`, Android 15, HyperOS `OS2.0.209.0.VMUMIXM`), não deduzido da
-documentação. "Sem root" = usuário `shell` via ADB por USB. Em outro aparelho, a coluna "dá?" pode
-mudar: é a primeira coisa a testar, com uma cobaia só, antes de aplicar qualquer lista.
+A resposta muda com o aparelho e com a camada de ROM. Abaixo, o que foi **medido no Redmi Pad SE**
+(`xun`, Android 15, HyperOS `OS2.0.209.0.VMUMIXM`), não deduzido da documentação. "Sem root" =
+usuário `shell` via ADB. Em outro aparelho, a coluna "dá?" pode mudar — numa TV Android 11, por
+exemplo, `pm disable-user` funciona; é a primeira coisa a testar, com uma cobaia só, antes de aplicar
+qualquer lista.
 
 | Capacidade | Como | Dá? | Observação |
 |---|---|---|---|
