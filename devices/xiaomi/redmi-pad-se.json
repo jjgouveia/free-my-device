@@ -9,7 +9,7 @@
   "android": 35,
   "fingerprint": "Redmi/xun_global/xun:15/AQ3A.240829.003/OS2.0.209.0.VMUMIXM:user/release-keys",
   "tested": "2026-11-01",
-  "evidence": "adb 37.0.1 via USB, 2026-11-01: pm list packages, getprop, dumpsys, dumpsys gfxinfo. Rotulos conferidos com aapt2 nos APKs puxados do aparelho. A medicao crua nao e publicada: contem a lista de apps do dono.",
+  "evidence": "adb 37.0.1 over USB, 2026-11-01: pm list packages, getprop, dumpsys, dumpsys gfxinfo. Labels checked with aapt2 on APKs pulled from the device. The raw measurement is not published: it contains the owner's app list.",
   "display": {
     "width": 1200,
     "height": 1920,
@@ -22,266 +22,266 @@
     {
       "pkg": "com.miui.msa.global",
       "fate": "off",
-      "why": "MSA, o SDK de anúncios da MIUI/HyperOS: notificações e 'recomendações' patrocinadas",
+      "why": "MSA, the MIUI/HyperOS ads SDK: sponsored notifications and 'recommendations'",
       "installed": true,
       "disabled": false
     },
     {
       "pkg": "com.miui.analytics",
       "fate": "off",
-      "why": "telemetria da MIUI: estatísticas de uso enviadas à Xiaomi",
+      "why": "MIUI telemetry: usage statistics sent to Xiaomi",
       "installed": true,
       "disabled": false
     },
     {
       "pkg": "com.miui.misightservice",
       "fate": "off",
-      "why": "'System quality monitoring' (rótulo do APK): coleta de estatísticas do aparelho",
+      "why": "'System quality monitoring' (APK label): collects device statistics",
       "installed": true,
       "disabled": false
     },
     {
       "pkg": "com.miui.bugreport",
       "fate": "off",
-      "why": "relato de bugs do sistema; nada no dia a dia depende dele",
+      "why": "system bug reporting; nothing in daily use depends on it",
       "installed": true,
       "disabled": false
     },
     {
       "pkg": "com.mi.globalbrowser",
       "fate": "off",
-      "why": "Mi Browser; o dono usa Firefox e Chrome",
+      "why": "Mi Browser; the owner uses Firefox and Chrome",
       "installed": true,
       "disabled": false
     },
     {
       "pkg": "com.miui.videoplayer",
       "fate": "off",
-      "why": "Mi Video, player com promoção e anúncio; os vídeos abrem em outro app",
+      "why": "Mi Video, a player with promos and ads; videos open in another app",
       "installed": true,
       "disabled": false
     },
     {
       "pkg": "com.miui.player",
       "fate": "off",
-      "why": "Mi Music; a música toca em outro app",
+      "why": "Mi Music; music plays in another app",
       "installed": true,
       "disabled": false
     },
     {
       "pkg": "com.xiaomi.discover",
       "fate": "off",
-      "why": "Discover: recomendações e vitrine de apps da Xiaomi",
+      "why": "Discover: Xiaomi's app recommendations and storefront",
       "installed": true,
       "disabled": false
     },
     {
       "pkg": "com.miui.thirdappassistant",
       "fate": "off",
-      "why": "'Third party app problems' (rótulo do APK): avisos e sugestões de desinstalar apps de terceiros",
+      "why": "'Third party app problems' (APK label): warnings and suggestions to uninstall third-party apps",
       "installed": true,
       "disabled": false
     },
     {
       "pkg": "com.miui.qr",
       "fate": "off",
-      "why": "DeviceInfoQR: QR com os dados do aparelho, só para atendimento técnico",
+      "why": "DeviceInfoQR: a QR code with the device's data, only for service desks",
       "installed": true,
       "disabled": false
     },
     {
       "pkg": "com.bsp.logmanager",
       "fate": "off",
-      "why": "'Log generator' (CatchLog do ODM Longcheer): coleta log do sistema para fábrica/assistência",
+      "why": "'Log generator' (ODM Longcheer's CatchLog): collects system logs for the factory/service",
       "installed": true,
       "disabled": false
     },
     {
       "pkg": "com.longcheertel.AutoTest",
       "fate": "off",
-      "why": "teste automático de fábrica do ODM Longcheer",
+      "why": "ODM Longcheer's factory self-test",
       "installed": true,
       "disabled": false
     },
     {
       "pkg": "com.longcheertel.cit",
       "fate": "off",
-      "why": "CIT, o teste de integração de fábrica do ODM Longcheer",
+      "why": "CIT, ODM Longcheer's factory integration test",
       "installed": true,
       "disabled": false
     },
     {
       "pkg": "com.miui.vsimcore",
       "fate": "off",
-      "why": "vSIM virtual: o aparelho é só Wi-Fi, sem modem",
+      "why": "virtual SIM: the device is Wi-Fi only, no modem",
       "installed": true,
       "disabled": false
     },
     {
       "pkg": "com.miui.fm",
       "fate": "off",
-      "why": "rádio FM: o tablet não tem rádio",
+      "why": "FM radio: the tablet has no radio",
       "installed": true,
       "disabled": false
     },
     {
       "pkg": "com.miui.fmservice",
       "fate": "off",
-      "why": "serviço do rádio FM, sem hardware para atender",
+      "why": "FM radio service, with no hardware to serve",
       "installed": true,
       "disabled": false
     },
     {
       "pkg": "com.microsoftsdk.crossdeviceservicebroker",
       "fate": "off",
-      "why": "ponte 'Vincular ao Windows' pré-instalada, sem uso aqui",
+      "why": "'Link to Windows' bridge, preinstalled, unused here",
       "installed": true,
       "disabled": false
     },
     {
       "pkg": "com.miui.cleaner",
       "fate": "keep",
-      "why": "limpeza com propaganda, mas o menu Armazenamento dos Ajustes pode abrir nele: medir antes de tirar"
+      "why": "cleaner with ads, but Settings > Storage may open into it: measure before removing"
     },
     {
       "pkg": "com.mi.android.globalFileexplorer",
       "fate": "keep",
-      "why": "gerenciador de arquivos da Mi com recomendações; o Google Files já está instalado, mas alguns fluxos do sistema abrem nele"
+      "why": "Mi file manager with recommendations; Google Files is already installed, but some system flows open into it"
     },
     {
       "pkg": "com.miui.miservice",
       "fate": "keep",
-      "why": "'Mi Services' (atendimento/pós-venda); efeito de desligar não medido"
+      "why": "'Mi Services' (support/after-sales); the effect of turning it off was not measured"
     },
     {
       "pkg": "com.miui.daemon",
       "fate": "keep",
-      "why": "daemon da MIUI; as listas de debloat o desligam, mas o efeito no HyperOS 2 não foi medido"
+      "why": "MIUI daemon; debloat lists turn it off, but the effect on HyperOS 2 was not measured"
     },
     {
       "pkg": "com.milink.service",
       "fate": "keep",
-      "why": "Mi Share/espelhamento para aparelhos Xiaomi; o dono pode usar"
+      "why": "Mi Share/casting to Xiaomi devices; the owner may use it"
     },
     {
       "pkg": "com.xiaomi.miralink",
       "fate": "keep",
-      "why": "Mi Link (espelhar tela para PC/Xiaomi); o dono pode usar"
+      "why": "Mi Link (mirror the screen to a PC/Xiaomi device); the owner may use it"
     },
     {
       "pkg": "com.miui.home",
       "fate": "never",
-      "why": "a home do aparelho: sem ela não há tela inicial"
+      "why": "the device's home: without it there is no home screen"
     },
     {
       "pkg": "com.miui.securitycenter",
       "fate": "never",
-      "why": "é dele que saem as permissões e o gerenciador de apps do HyperOS"
+      "why": "where HyperOS permissions and the app manager come from"
     },
     {
       "pkg": "com.miui.securityadd",
       "fate": "never",
-      "why": "complemento do gerenciador de segurança"
+      "why": "add-on to the security manager"
     },
     {
       "pkg": "com.miui.securitycore",
       "fate": "never",
-      "why": "núcleo do gerenciador de segurança"
+      "why": "core of the security manager"
     },
     {
       "pkg": "com.miui.guardprovider",
       "fate": "never",
-      "why": "provedor do antivírus/segurança do HyperOS"
+      "why": "HyperOS antivirus/security provider"
     },
     {
       "pkg": "com.lbe.security.miui",
       "fate": "never",
-      "why": "controle de permissões do MIUI; sem ele os apps não recebem permissão"
+      "why": "MIUI permission control; without it apps get no permissions"
     },
     {
       "pkg": "com.miui.powerkeeper",
       "fate": "never",
-      "why": "bateria e desempenho, incluindo o controle de apps em segundo plano"
+      "why": "battery and performance, including background app control"
     },
     {
       "pkg": "com.miui.gallery",
       "fate": "never",
-      "why": "as fotos do dono"
+      "why": "the owner's photos"
     },
     {
       "pkg": "com.xiaomi.account",
       "fate": "never",
-      "why": "conta Mi: base de Find Device, backup e serviços Xiaomi"
+      "why": "Mi account: the base for Find Device, backup and Xiaomi services"
     },
     {
       "pkg": "com.miui.cloudservice",
       "fate": "never",
-      "why": "Mi Cloud: pode haver backup do dono"
+      "why": "Mi Cloud: the owner may have backups there"
     },
     {
       "pkg": "com.miui.cloudbackup",
       "fate": "never",
-      "why": "backup do Mi Cloud"
+      "why": "Mi Cloud backup"
     },
     {
       "pkg": "com.miui.micloudsync",
       "fate": "never",
-      "why": "sincronização do Mi Cloud"
+      "why": "Mi Cloud sync"
     },
     {
       "pkg": "com.xiaomi.finddevice",
       "fate": "never",
-      "why": "'Encontrar aparelho' da Xiaomi"
+      "why": "Xiaomi's 'Find device'"
     },
     {
       "pkg": "com.xiaomi.bluetooth",
       "fate": "never",
-      "why": "pilha de Bluetooth do HyperOS"
+      "why": "HyperOS Bluetooth stack"
     },
     {
       "pkg": "com.miui.face",
       "fate": "never",
-      "why": "desbloqueio facial"
+      "why": "face unlock"
     },
     {
       "pkg": "com.xiaomi.ugd",
       "fate": "never",
-      "why": "'GPU Driver Updater' (rótulo do APK): atualiza o driver da GPU; desligar arrisca jogos e composição"
+      "why": "'GPU Driver Updater' (APK label): updates the GPU driver; turning it off risks games and compositing"
     },
     {
       "pkg": "com.novatek.novavis",
       "fate": "never",
-      "why": "componente do ODM (Novatek); efeito de desligar desconhecido"
+      "why": "ODM component (Novatek); effect of turning it off unknown"
     },
     {
       "pkg": "com.xiaomi.touchservice",
       "fate": "never",
-      "why": "serviço de toque do HyperOS"
+      "why": "HyperOS touch service"
     },
     {
       "pkg": "com.miui.notification",
       "fate": "never",
-      "why": "central de notificações do HyperOS"
+      "why": "HyperOS notification center"
     },
     {
       "pkg": "com.miui.core",
       "fate": "never",
-      "why": "núcleo de serviços da MIUI"
+      "why": "MIUI services core"
     },
     {
       "pkg": "com.miui.system",
       "fate": "never",
-      "why": "serviços de sistema da MIUI"
+      "why": "MIUI system services"
     },
     {
       "pkg": "com.android.vending",
       "fate": "never",
-      "why": "Play Store: atualizações e licenças dos apps comprados"
+      "why": "Play Store: updates and licenses for purchased apps"
     },
     {
       "pkg": "com.google.android.gms",
       "fate": "never",
-      "why": "Play services: sem ele metade dos apps para de funcionar"
+      "why": "Play services: without it half the apps stop working"
     }
   ]
 }

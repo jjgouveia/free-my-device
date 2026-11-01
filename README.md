@@ -1,127 +1,131 @@
 # free-my-device
 
-Bancada de PC (adb, sem root) para descobrir **por que** um aparelho Android está pesado — TV,
-tablet ou celular —, aplicar um ajuste medido e reverter tudo com um comando.
+A PC-side bench (adb, no root) to find out **why** an Android device feels heavy — TV, tablet or
+phone —, apply a measured fix and revert everything with one command.
 
-Não é uma lista de debloat copiada da internet. É um ciclo: **medir → planejar → aplicar → verificar →
-reverter**. O perfil de cada aparelho é dado (JSON), não código, e só o que está escrito nele é tocado.
+It is not a debloat list copied from the internet. It is a loop: **measure → plan → apply → verify →
+revert**. Each device's profile is data (JSON), not code, and only what is written there is touched.
 
-O contrato de perfil (`spec 1`) é o mesmo para qualquer aparelho: `stock_home`, `stock_dream`,
-`input_service` e `quirks` são campos de TV e ficam opcionais fora dela. É por isso que o mesmo schema
-aceita um tablet sem uma linha de mudança. Hoje o único perfil medido aqui é o do Redmi Pad SE.
+The profile contract (`spec 1`) is the same for every device: `stock_home`, `stock_dream`,
+`input_service` and `quirks` are TV fields and stay optional elsewhere. That is why the same schema
+accepts a tablet without a single change. Today the only measured profile here is the Redmi Pad SE.
 
-## Requisitos
+## Requirements
 
-- [Node.js](https://nodejs.org) 18 ou mais novo (só biblioteca padrão, sem `npm install`)
-- `adb` (platform-tools). O script procura no PATH e nos SDKs comuns; `ADB=/caminho/adb` sempre vence
-- Alcançar o aparelho: USB em celular/tablet (depuração ligada, chave autorizada) ou `adb connect`
-  em TV com depuração de rede
-- Nada de root. Nada é instalado no aparelho.
+- [Node.js](https://nodejs.org) 18 or newer (standard library only, no `npm install`)
+- `adb` (platform-tools). The script looks in PATH and in the usual SDKs; `ADB=/path/to/adb`
+  always wins
+- Reach the device: USB on a phone/tablet (debugging on, key authorized) or `adb connect` on a TV
+  with network debugging
+- No root. Nothing is installed on the device.
 
 ```bash
-adb devices        # precisa listar o aparelho como "device"
+adb devices        # must list the device as "device"
 ```
 
-## Passo a passo
+## Step by step
 
-### 1. Medir (só leitura)
+### 1. Measure (read-only)
 
 ```bash
 node tools/mode.js measure
 ```
 
-Grava `out/measure/<aparelho>-<data>.json` com props, tamanho, densidade, lista de pacotes, memória,
-CPU e `gfxinfo`. Esse arquivo tem o número de série e a lista dos seus apps: `out/` é ignorado pelo
-git de propósito.
+Writes `out/measure/<device>-<date>.json` with props, display, storage, package list and memory.
+That file holds the serial number and your app list: `out/` is git-ignored on purpose.
 
-### 2. Escolher o perfil
+### 2. Pick the profile
 
-`devices/<marca>/<aparelho>.json`. Já existe o do Redmi Pad SE. Para outro aparelho, veja
-[docs/03-metodo.md](docs/03-metodo.md) — a regra é não inventar: pacote sem `why` verificável não entra
-em `off`.
+`devices/<brand>/<device>.json`. The Redmi Pad SE one already exists. For another device, see
+[docs/03-method.md](docs/03-method.md) — the rule is not to invent: a package without a verifiable
+`why` does not go into `off`.
 
-### 3. Ver o plano (só leitura)
+### 3. See the plan (read-only)
 
 ```bash
 node tools/mode.js plan devices/xiaomi/redmi-pad-se.json
 ```
 
-Mostra o que sairia, o que voltaria, o que já está fora e o que o perfil pede mas a ferramenta recusa.
-Nada é alterado.
+Shows what would leave, what would come back, what is already off and what the profile asks for but
+the tool refuses. Nothing changes.
 
-### 4. Aplicar
+### 4. Apply
 
 ```bash
 node tools/mode.js apply devices/xiaomi/redmi-pad-se.json --yes
 ```
 
-Sem `--yes` ele imprime o plano e sai. Com `--yes`, tira os pacotes do usuário 0 e grava o **ledger**
-(no aparelho e em `out/ledger/`), que é o que o revert consulta.
+Without `--yes` it prints the plan and exits. With `--yes`, it removes the packages from user 0 and
+writes the **ledger** (on the device and in `out/ledger/`), which is what revert reads.
 
-### 5. Medir o depois
+### 5. Measure the after
 
 ```bash
 node tools/mode.js frames
 ```
 
-Zera o `gfxinfo`, executa sempre os mesmos 20 gestos e lê o resultado. Comparar janela acumulada
-desde o boot não vale: mistura boot, Play Store e uso real.
+Resets `gfxinfo`, runs the same 20 gestures every time and reads the result. Comparing the window
+accumulated since boot is worthless: it mixes boot, Play Store and real use.
 
-### 6. Reverter
+### 6. Revert
 
 ```bash
 node tools/mode.js revert
 ```
 
-Religa só o que **esta ferramenta** tirou. App que você mesmo desinstalou não volta.
+Turns back on only what **this tool** removed. An app you uninstalled yourself does not come back.
 
-## Resultado no Redmi Pad SE
+## Result on the Redmi Pad SE
 
-Android 15 / HyperOS `OS2.0.209.0.VMUMIXM`, 8 GB, `xun`. Detalhes em
-[docs/01-diagnostico-redmi-pad-se.md](docs/01-diagnostico-redmi-pad-se.md).
+Android 15 / HyperOS `OS2.0.209.0.VMUMIXM`, 8 GB, `xun`. Details in
+[docs/01-diagnosis-redmi-pad-se.md](docs/01-diagnosis-redmi-pad-se.md).
 
-| | antes | depois |
+| | before | after |
 |---|---|---|
-| pacotes instalados | 444 | 426 |
-| frames travados (20 gestos) | 5/600 (0,83%) | 5/622 (0,80%) |
+| installed packages | 444 | 426 |
+| janky frames (20 gestures) | 5/600 (0.83%) | 5/622 (0.80%) |
 | p90 / p99 | 10 / 19 ms | 7 / 15 ms |
-| load average | 4,56 / 4,50 / 6,10 | 2,64 / 2,87 / 4,36 |
-| `com.android.vending:background` | 26 min de CPU em 22 min ligado | 72 s em 30 min |
+| load average | 4.56 / 4.50 / 6.10 | 2.64 / 2.87 / 4.36 |
+| `com.android.vending:background` | 26 min of CPU in 22 min uptime | 72 s in 30 min |
 
-A lição que justifica o método: o launcher não era o culpado. Uma fila de atualização presa no Play
-Store queimava mais de um núcleo desde o boot. Debloat sem medir teria "resolvido" o sintoma errado.
+The lesson that justifies the method: the launcher was not the culprit. A stuck update queue in the
+Play Store burned more than a core since boot. Debloating without measuring would have "fixed" the
+wrong symptom.
 
-## O que ele não faz
+## What it does not do
 
-- Não instala nada no aparelho e não precisa de root.
-- Não toca em pacote fora do perfil.
-- Não desliga o que está em `ALWAYS_KEEP` (tela, ajustes, instalador, permissões, teclado, telefonia,
-  GMS), mesmo que o perfil peça.
-- Não transforma aparelho lento em rápido: ele remove peso e prova o que mudou.
-- **Na TV, ainda só a metade de pacotes.** `off_after_handover` aparece no plano como "esperando home
-  própria" e não é executado: trocar home, screensaver e entrada é trabalho de um app rodando no
-  aparelho, não desta bancada. O perfil e o ledger já servem; a mão no `TvInputManager` não.
-- Ainda não fala com o aparelho sem PC. A camada no aparelho (Shizuku) está decidida, não implementada.
+- It does not install anything on the device and does not need root.
+- It does not touch a package outside the profile.
+- It does not turn off what is in `ALWAYS_KEEP` (screen, settings, installer, permissions, keyboard,
+  telephony, GMS), even if the profile asks.
+- It does not turn a slow device into a fast one: it removes weight and proves what changed.
+- **On a TV, only the package half.** `off_after_handover` shows up in the plan as "waiting for a
+  home of its own" and is not executed: switching home, screensaver and input is the job of an app
+  running on the device, not of this bench. The profile and the ledger are ready; the hand on
+  `TvInputManager` is not.
+- It still does not talk to the device without a PC. The on-device layer (Shizuku) is decided, not
+  implemented.
 
-## Estrutura
+## Layout
 
 ```
-devices/<marca>/<aparelho>.json    perfil medido (spec 1), um arquivo por aparelho
-schemas/profile.schema.json        contrato que o perfil precisa cumprir
+devices/<brand>/<device>.json      measured profile (spec 1), one file per device
+schemas/profile.schema.json        contract the profile must satisfy
 tools/mode.js                      measure | plan | apply | revert | frames
-docs/                              diagnóstico, matriz de capacidade, método
-out/                               medições e ledger locais (git ignora)
+docs/                              diagnosis, capability matrix, method
+out/                               local measurements and ledger (git ignores it)
 ```
 
-## Por que o revert é confiável
+## Why revert is trustworthy
 
-O estado real do aparelho manda, não a saída do comando. São dois ledgers porque são dois mecanismos:
+The device's real state decides, not the command's output. There are two ledgers because there are
+two mechanisms:
 
-| chave | o que significa | revert usa |
+| key | what it means | revert uses |
 |---|---|---|
-| `fmd_disabled` | pacote desligado com `pm disable-user` | `pm enable` |
-| `fmd_removed` | pacote tirado do usuário 0 com `pm uninstall -k --user 0` | `pm install-existing` |
+| `fmd_disabled` | package turned off with `pm disable-user` | `pm enable` |
+| `fmd_removed` | package removed from user 0 with `pm uninstall -k --user 0` | `pm install-existing` |
 
-O segundo existe porque o HyperOS 15 recusa `disable-user` em pacote de sistema
-(`SecurityException: Cannot disable system packages`). O perfil não sabe disso: o `fate` diz *o que*
-sai, a ferramenta escolhe *como*. Ver [docs/02-matriz-capacidade.md](docs/02-matriz-capacidade.md).
+The second one exists because HyperOS 15 refuses `disable-user` on a system package
+(`SecurityException: Cannot disable system packages`). The profile does not know that: `fate` says
+*what* leaves, the tool picks *how*. See [docs/02-capability-matrix.md](docs/02-capability-matrix.md).

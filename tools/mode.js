@@ -1,22 +1,22 @@
 #!/usr/bin/env node
-// Bancada de PC para aparelho Android (TV, tablet, celular): mede, planeja, aplica e reverte,
-// falando com o aparelho pelo adb do computador.
+// PC-side bench for an Android device (TV, tablet, phone): measure, plan, apply and revert,
+// talking to the device through the computer's adb.
 //
 //   node tools/mode.js measure [--serial S] [--out F]
-//   node tools/mode.js plan    <perfil.json> [--serial S]
-//   node tools/mode.js apply   <perfil.json> [--serial S] [--yes]
+//   node tools/mode.js plan    <profile.json> [--serial S]
+//   node tools/mode.js apply   <profile.json> [--serial S] [--yes]
 //   node tools/mode.js revert  [--serial S]
 //   node tools/mode.js frames  [--pkg com.miui.home] [--serial S]
 //
-// Regras (nao se negociam):
-//  - so toca em pacote escrito no perfil;
-//  - nunca desliga ALWAYS_KEEP;
-//  - restaura so o que NOS tiramos (ledger local + settings global do aparelho);
-//  - confirma pelo estado real do aparelho, nunca pela saida do comando;
-//  - `apply` sem --yes imprime o plano e sai sem tocar em nada.
+// Rules (not negotiable):
+//  - only touches a package named in the profile;
+//  - never turns off ALWAYS_KEEP;
+//  - restores only what WE removed (local ledger + the device's global settings);
+//  - confirms by the device's real state, never by the command's output;
+//  - `apply` without --yes prints the plan and exits without touching anything.
 //
-// O "como" (disable-user ou uninstall-for-user) e decisao da ferramenta, nao do perfil: o HyperOS
-// recusa disable-user em pacote de sistema e o caminho que sobra e `pm uninstall -k --user 0`.
+// The "how" (disable-user or uninstall-for-user) is the tool's call, not the profile's: HyperOS
+// refuses disable-user on a system package, and the path left is `pm uninstall -k --user 0`.
 const { execFileSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
@@ -26,10 +26,10 @@ const here = __dirname;
 const outDir = path.resolve(here, '..', 'out');
 const ADB = process.env.ADB || findAdb();
 const LEDGER = 'fmd_disabled';
-// Espelho do que saiu por `pm uninstall -k --user 0` (o outro caminho, quando disable-user e barrado).
+// Mirror of what left through `pm uninstall -k --user 0` (the other path, when disable-user is blocked).
 const LEDGER_REMOVED = 'fmd_removed';
 
-/** adb do PATH, ou o dos SDKs comuns. `ADB=/caminho/adb` sempre vence. */
+/** adb from PATH, or from the usual SDKs. `ADB=/path/to/adb` always wins. */
 function findAdb() {
   const home = os.homedir();
   const candidates = [
@@ -43,9 +43,9 @@ function findAdb() {
   return 'adb';
 }
 
-// Sem eles o aparelho nao volta sozinho, ou perde o que faz dele um aparelho: tela, ajustes,
-// instalador, permissoes, teclado, telefonia, servicos do Google. Recusados mesmo que o perfil
-// mande desligar (o perfil de cada aparelho refina isso com `never`).
+// Without them the device does not boot back on its own, or loses what makes it a device: screen,
+// settings, installer, permissions, keyboard, telephony, Google services. Refused even if the
+// profile asks to turn them off (each device profile refines that with `never`).
 const ALWAYS_KEEP = new Set([
   'android',
   'com.android.systemui',
@@ -68,7 +68,7 @@ const ALWAYS_KEEP = new Set([
   'com.lbe.security.miui',
 ]);
 
-// --- argumentos -------------------------------------------------------------
+// --- arguments --------------------------------------------------------------
 
 function parseArgs(argv) {
   const opts = { _: [] };
@@ -97,7 +97,7 @@ function adb(args, serial, quiet) {
     });
   } catch (e) {
     const msg = (e.stderr || e.stdout || e.message || '').toString().trim().split(/\r?\n/)[0];
-    throw new Error('adb ' + args.join(' ') + ': ' + (msg || 'falhou'));
+    throw new Error('adb ' + args.join(' ') + ': ' + (msg || 'failed'));
   }
 }
 
@@ -105,7 +105,7 @@ function shell(cmd, serial, quiet) {
   return adb(['shell', cmd], serial, quiet);
 }
 
-/** Um aparelho so: usa ele. Varios: pede --serial. Nenhum: explica o que fazer. */
+/** One device: use it. Several: ask for --serial. None: explain what to do. */
 function pickSerial(opts) {
   if (opts.serial) return opts.serial;
   const out = adb(['devices']);
@@ -116,11 +116,11 @@ function pickSerial(opts) {
     const offline = lines.filter((l) => /\s(unauthorized|offline)$/.test(l));
     throw new Error(
       offline.length
-        ? 'o aparelho esta na lista mas nao autorizou este PC (' + offline.join(', ') + '): aceite "Permitir depuracao USB" na tela'
-        : 'nenhum aparelho no adb: ligue a depuracao USB e conecte o cabo'
+        ? 'the device is listed but did not authorize this PC (' + offline.join(', ') + '): accept "Allow USB debugging" on screen'
+        : 'no device on adb: enable USB debugging and plug the cable'
     );
   }
-  throw new Error('mais de um aparelho (' + ready.join(', ') + '): use --serial');
+  throw new Error('more than one device (' + ready.join(', ') + '): use --serial');
 }
 
 function parsePackages(output) {
@@ -149,7 +149,7 @@ const PROPS = [
   'ro.sf.lcd_density',
 ];
 
-// Tudo leitura. Nada aqui altera o aparelho.
+// All read-only. Nothing here changes the device.
 const MEASURE = [
   ['wm size', 'wm size'],
   ['wm density', 'wm density'],
@@ -213,24 +213,24 @@ function measure(opts) {
   const free = (commands.meminfo.match(/MemAvailable:\s+(\d+)\s+kB/) || [, '?'])[1];
   const mb = (kb) => (kb === '?' ? '?' : Math.round(Number(kb) / 1024) + ' MB');
 
-  console.log('aparelho : ' + (props['ro.product.brand'] || '?') + ' ' + (props['ro.product.model'] || '?'));
+  console.log('model    : ' + (props['ro.product.brand'] || '?') + ' ' + (props['ro.product.model'] || '?'));
   console.log('device   : ' + (props['ro.product.device'] || '?') + '   android ' + (props['ro.build.version.release'] || '?') + ' (sdk ' + (props['ro.build.version.sdk'] || '?') + ')');
   const firmware = [props['ro.mi.os.version.name'], props['ro.mi.os.version.incremental'] || props['ro.miui.ui.version.name']].filter(Boolean).join(' ');
   if (firmware) console.log('firmware : ' + firmware);
-  console.log('tela     : ' + commands['wm size'].trim().replace(/\r?\n/g, ' ') + '   ' + commands['wm density'].trim());
-  console.log('memoria  : ' + mb(mem) + ' total, ' + mb(free) + ' disponivel');
-  console.log('disco    : ' + commands.storage.split(/\r?\n/).filter(Boolean).slice(-1)[0].trim());
-  console.log('pacotes  : ' + all.size + ' (' + system.size + ' de sistema), ' + disabled.size + ' desligados');
+  console.log('display  : ' + commands['wm size'].trim().replace(/\r?\n/g, ' ') + '   ' + commands['wm density'].trim());
+  console.log('memory   : ' + mb(mem) + ' total, ' + mb(free) + ' available');
+  console.log('storage  : ' + commands.storage.split(/\r?\n/).filter(Boolean).slice(-1)[0].trim());
+  console.log('packages : ' + all.size + ' (' + system.size + ' system), ' + disabled.size + ' disabled');
   console.log('home     : ' + (commands.homeRole.trim() || commands.homeResolve.trim()).replace(/\r?\n/g, ' '));
-  console.log('animacao : ' + [commands.animWindow, commands.animTransition, commands.animDuration].map((s) => s.trim()).join(' / '));
-  console.log('evidencia: ' + file);
+  console.log('animation: ' + [commands.animWindow, commands.animTransition, commands.animDuration].map((s) => s.trim()).join(' / '));
+  console.log('evidence : ' + file);
 }
 
-// --- perfil -----------------------------------------------------------------
+// --- profile -----------------------------------------------------------------
 
 function loadProfile(file) {
   const p = JSON.parse(fs.readFileSync(file, 'utf8'));
-  if (p.kind !== 'profile' || p.spec !== 1) throw new Error('nao e um perfil spec 1: ' + file);
+  if (p.kind !== 'profile' || p.spec !== 1) throw new Error('not a spec 1 profile: ' + file);
   const fate = new Map();
   const why = new Map();
   for (const entry of p.packages) {
@@ -240,7 +240,7 @@ function loadProfile(file) {
   return { raw: p, fate, why };
 }
 
-/** Casa como o Profile.load: fingerprint exato, senao device sem diferenciar maiusculas. */
+/** Exact fingerprint, else device name compared case-insensitively. */
 function matches(p, props) {
   if (p.fingerprint && p.fingerprint === props['ro.build.fingerprint']) return true;
   return !!p.device && p.device.toLowerCase() === (props['ro.product.device'] || '').toLowerCase();
@@ -256,7 +256,7 @@ function profileProps(serial) {
   return props;
 }
 
-// --- plano ------------------------------------------------------------------
+// --- plan --------------------------------------------------------------------
 
 function buildPlan(profileFile, serial) {
   const p = loadProfile(profileFile);
@@ -272,7 +272,7 @@ function buildPlan(profileFile, serial) {
 
   for (const [pkg, fate] of p.fate) {
     if (!installed.has(pkg)) {
-      // Sem isso, um pacote que nos mesmos tiramos aparece como "ausente" no plano seguinte.
+      // Without this, a package we removed ourselves shows up as "absent" on the next plan.
       if (ledger.has(pkg) && fate === 'off') plan.already.push(pkg);
       else plan.absent.push(pkg);
       continue;
@@ -288,7 +288,7 @@ function buildPlan(profileFile, serial) {
     }
   }
 
-  // Religar so o que e nosso, e so se o perfil nao pede mais para desligar.
+  // Turn back on only what is ours, and only if the profile no longer asks to turn it off.
   for (const [pkg, how] of ledger) {
     if (!installed.has(pkg)) {
       if (p.fate.get(pkg) === 'off') continue;
@@ -306,22 +306,22 @@ function buildPlan(profileFile, serial) {
 
 function renderPlan({ plan, profile }) {
   const why = (pkg) => (profile.why.get(pkg) ? '  ' + profile.why.get(pkg) : '');
-  console.log('perfil   : ' + profile.raw.id + (plan.matched ? '' : '  ** NAO e o aparelho deste perfil **'));
-  console.log('desligar (' + plan.toDisable.length + '):');
-  if (!plan.toDisable.length) console.log('  nada');
+  console.log('profile  : ' + profile.raw.id + (plan.matched ? '' : '  ** NOT the device this profile was measured on **'));
+  console.log('remove (' + plan.toDisable.length + '):');
+  if (!plan.toDisable.length) console.log('  nothing');
   for (const pkg of plan.toDisable) console.log('  - ' + pkg + why(pkg));
-  console.log('religar (' + plan.toEnable.length + '):');
-  if (!plan.toEnable.length) console.log('  nada');
+  console.log('restore (' + plan.toEnable.length + '):');
+  if (!plan.toEnable.length) console.log('  nothing');
   for (const pkg of plan.toEnable) console.log('  + ' + pkg);
   if (plan.toRestore.length) {
-    console.log('reinstalar (' + plan.toRestore.length + '):');
+    console.log('reinstall (' + plan.toRestore.length + '):');
     for (const pkg of plan.toRestore) console.log('  + ' + pkg);
   }
-  console.log('ja desligados (' + plan.already.length + ')');
-  console.log('bloqueados (' + plan.blocked.length + ')' + (plan.blocked.length ? ': ' + plan.blocked.join(', ') : ''));
-  console.log('esperando home propria (' + plan.handover.length + ')' + (plan.handover.length ? ': ' + plan.handover.join(', ') : ''));
-  console.log('ausentes neste aparelho (' + plan.absent.length + ')' + (plan.absent.length <= 10 && plan.absent.length ? ': ' + plan.absent.join(', ') : ''));
-  if (plan.unknown.length) console.log('destino desconhecido (' + plan.unknown.length + '): ' + plan.unknown.join(', '));
+  console.log('already off (' + plan.already.length + ')');
+  console.log('blocked (' + plan.blocked.length + ')' + (plan.blocked.length ? ': ' + plan.blocked.join(', ') : ''));
+  console.log('waiting for a home of its own (' + plan.handover.length + ')' + (plan.handover.length ? ': ' + plan.handover.join(', ') : ''));
+  console.log('absent on this device (' + plan.absent.length + ')' + (plan.absent.length <= 10 && plan.absent.length ? ': ' + plan.absent.join(', ') : ''));
+  if (plan.unknown.length) console.log('unknown fate (' + plan.unknown.length + '): ' + plan.unknown.join(', '));
 }
 
 // --- ledger -----------------------------------------------------------------
@@ -336,7 +336,7 @@ function readLedger(serial) {
     const local = JSON.parse(fs.readFileSync(ledgerFile(serial), 'utf8'));
     for (const pkg of local.disabled || []) map.set(pkg, 'disable');
     for (const pkg of local.removed || []) map.set(pkg, 'uninstall');
-  } catch (e) { /* sem arquivo: o do aparelho manda */ }
+  } catch (e) { /* no file: the device's copy wins */ }
   const csv = (key) => {
     const out = shell('settings get global ' + key, serial).trim();
     if (out && out !== 'null') for (const pkg of out.split(',')) if (pkg.trim()) map.set(pkg.trim(), key === LEDGER ? 'disable' : 'uninstall');
@@ -366,17 +366,17 @@ function tryShell(cmd, serial) {
 }
 
 /**
- * Nem todo Android aceita `pm disable-user` em pacote de sistema: o HyperOS 15 responde
+ * Not every Android accepts `pm disable-user` on a system package: HyperOS 15 answers
  * "Cannot disable system packages" (PackageManagerServiceImpl.shouldRestrictEnabledSettingsChange).
- * Nesse caso o caminho e desinstalar para o usuario 0, que o `install-existing` desfaz.
- * O mecanismo volta junto porque o revert precisa saber por onde religar.
+ * In that case the path is uninstalling for user 0, which `install-existing` undoes.
+ * The mechanism comes back with it, because revert needs to know which way to turn it on.
  */
 function removePkg(serial, pkg) {
   const first = tryShell('pm disable-user --user 0 ' + pkg, serial);
   if (first.ok) return { how: 'disable', out: first.out || 'ok' };
   if (!/Cannot disable system packages|SecurityException/i.test(first.out)) return { how: null, out: first.out };
   const fallback = tryShell('pm uninstall -k --user 0 ' + pkg, serial);
-  if (fallback.ok && /^Success/i.test(fallback.out)) return { how: 'uninstall', out: 'fora do usuario 0' };
+  if (fallback.ok && /^Success/i.test(fallback.out)) return { how: 'uninstall', out: 'removed from user 0' };
   return { how: null, out: fallback.out };
 }
 
@@ -395,15 +395,15 @@ function apply(profileFile, opts) {
   renderPlan(built);
 
   if (!built.plan.matched && !opts.force) {
-    console.error('\nrecusado: este aparelho nao e o do perfil. Nada foi alterado. (--force ignora)');
+    console.error('\nrefused: this is not the device this profile was measured on. Nothing changed. (--force overrides)');
     process.exit(3);
   }
   if (built.plan.toDisable.length + built.plan.toEnable.length === 0) {
-    console.log('\nnada a fazer.');
+    console.log('\nnothing to do.');
     return;
   }
   if (!opts.yes) {
-    console.log('\nplano apenas. Rode de novo com --yes para aplicar. Nada foi alterado.');
+    console.log('\nplan only. Run again with --yes to apply. Nothing changed.');
     return;
   }
 
@@ -420,7 +420,7 @@ function apply(profileFile, opts) {
     console.log('+ ' + pkg + ': ' + (out || 'ok'));
   }
 
-  // Confirma pelo estado real: so entra no ledger o que o aparelho diz estar fora.
+  // Confirm by real state: only what the device says is off goes into the ledger.
   const disabled = parsePackages(shell('pm list packages -d', serial));
   const installed = parsePackages(shell('pm list packages', serial));
   const ledger = readLedger(serial);
@@ -432,14 +432,14 @@ function apply(profileFile, opts) {
   for (const pkg of built.plan.toEnable) if (!disabled.has(pkg)) ledger.delete(pkg);
   for (const pkg of built.plan.toRestore) if (installed.has(pkg)) ledger.delete(pkg);
   writeLedger(serial, ledger);
-  console.log('\nledger: ' + ledger.size + ' pacote(s) nosso(s) fora neste aparelho.');
+  console.log('\nledger: ' + ledger.size + ' package(s) removed by us on this device.');
 }
 
 function revert(opts) {
   const serial = pickSerial(opts);
   const ledger = readLedger(serial);
   if (!ledger.size) {
-    console.log('ledger vazio: nada foi desligado por nos neste aparelho.');
+    console.log('empty ledger: nothing was turned off by us on this device.');
     return;
   }
   for (const [pkg, how] of ledger) {
@@ -453,19 +453,19 @@ function revert(opts) {
     if (how === 'uninstall' ? !installed.has(pkg) : now.has(pkg)) kept.set(pkg, how);
   }
   writeLedger(serial, kept);
-  console.log(kept.size ? '\nainda fora: ' + [...kept.keys()].join(', ') : '\ntudo de volta ao estado anterior.');
+  console.log(kept.size ? '\nstill off: ' + [...kept.keys()].join(', ') : '\neverything back to the previous state.');
 }
 
-// --- frames do launcher ------------------------------------------------------
+// --- launcher frames ---------------------------------------------------------
 
-/** Pausa sincrona: o script e uma sequencia de gestos, nao precisa de paralelismo. */
+/** Synchronous pause: the script is a sequence of gestures, no parallelism needed. */
 function sleepMs(ms) {
   Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
 }
 
 /**
- * Zera o gfxinfo, executa sempre os mesmos 20 gestos e le o resultado. Sem gesto fixo a
- * comparacao antes/depois nao vale nada: a janela do boot e a de um scroll nao se comparam.
+ * Resets gfxinfo, runs the same 20 gestures every time and reads the result. Without a fixed
+ * gesture the before/after comparison means nothing: a boot window and a scroll are not comparable.
  */
 function frames(opts) {
   const serial = pickSerial(opts);
@@ -492,32 +492,32 @@ function frames(opts) {
     const m = out.match(new RegExp(name + ':\\s*(.+)'));
     return m ? m[1].trim() : '?';
   };
-  console.log('pacote   : ' + pkg);
+  console.log('package  : ' + pkg);
   console.log('frames   : ' + field('Total frames rendered'));
-  console.log('travados : ' + field('Janky frames') + '   (legacy: ' + field('Janky frames \\(legacy\\)') + ')');
+  console.log('janky    : ' + field('Janky frames') + '   (legacy: ' + field('Janky frames \\(legacy\\)') + ')');
   console.log('p50/p90  : ' + field('50th percentile') + ' / ' + field('90th percentile'));
   console.log('p95/p99  : ' + field('95th percentile') + ' / ' + field('99th percentile'));
-  console.log('vsync    : ' + field('Number Missed Vsync') + ' perdidos, ' + field('Number Slow UI thread') + ' de UI lenta');
+  console.log('vsync    : ' + field('Number Missed Vsync') + ' missed, ' + field('Number Slow UI thread') + ' slow UI thread');
 }
 
-// --- entrada ----------------------------------------------------------------
+// --- entry point -------------------------------------------------------------
 
 function main() {
   const opts = parseArgs(process.argv.slice(2));
   const [cmd, file] = opts._;
   if (!cmd) {
-    console.error('uso: node tools/mode.js measure|plan|apply|revert|frames [perfil.json] [--serial S] [--yes] [--pkg PKG]');
+    console.error('usage: node tools/mode.js measure|plan|apply|revert|frames [profile.json] [--serial S] [--yes] [--pkg PKG]');
     process.exit(2);
   }
   if (cmd === 'measure') return measure(opts);
   if (cmd === 'revert') return revert(opts);
   if (cmd === 'frames') return frames(opts);
   if (cmd !== 'plan' && cmd !== 'apply') {
-    console.error('comando desconhecido: ' + cmd);
+    console.error('unknown command: ' + cmd);
     process.exit(2);
   }
   if (!file) {
-    console.error('falta o perfil: node tools/mode.js ' + cmd + ' <perfil.json>');
+    console.error('missing profile: node tools/mode.js ' + cmd + ' <profile.json>');
     process.exit(2);
   }
   if (cmd === 'apply') return apply(file, opts);
@@ -527,7 +527,7 @@ function main() {
 try {
   main();
 } catch (e) {
-  console.error('erro: ' + e.message);
+  console.error('error: ' + e.message);
   if (process.env.FMD_DEBUG) console.error(e.stack);
   process.exit(1);
 }

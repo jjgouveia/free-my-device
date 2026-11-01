@@ -27,13 +27,13 @@
       "maxLength": 64
     },
     "brand": {
-      "description": "ro.product.brand, as the TV reports it.",
+      "description": "ro.product.brand, as the device reports it.",
       "type": "string",
       "minLength": 1,
       "maxLength": 32
     },
     "model": {
-      "description": "ro.product.model, as the TV reports it (often the marketing name, sometimes just \"Smart TV\").",
+      "description": "ro.product.model, as the device reports it (often the marketing name, sometimes just \"Smart TV\").",
       "type": "string",
       "maxLength": 64
     },
@@ -105,7 +105,7 @@
       "items": { "type": "string", "pattern": "^[a-z0-9_]{3,40}$" }
     },
     "packages": {
-      "description": "Only packages measured on this device. Absent from the TV means absent from here; a runtime never touches a package that is not listed.",
+      "description": "Only packages measured on this device. Absent from the device means absent from here; a runtime never touches a package that is not listed.",
       "type": "array",
       "maxItems": 2000,
       "items": {

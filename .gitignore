@@ -1,4 +1,4 @@
-# medições e ledger são locais: contêm número de série e a lista de apps do dono
+# measurements and ledger are local: they hold the serial number and the owner's app list
 out/
 
 node_modules/
